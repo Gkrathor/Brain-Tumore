@@ -1,0 +1,44 @@
+
+# Hi, I'm Gaurav Kumar! 👋
+# Matlab Code Guide!
+
+
+#MATLAB CODE
+
+
+global img1 img2
+[path, nofile] = imgetfile();
+if nofile 
+ msgbox(sprints('Image NOT Found !!!'), 'ERROR', 'Warning');
+ return 
+ end
+ img1 = imread(path);
+ img1 = im2double(img1);
+ img2 = img1;
+ axes(handles.axes1);
+ imshow(img1)
+ title('\fontsize{20}\color[rgb]{0.996, 0.592, 0.0} Brain MRI')
+
+
+global img1
+axes(handles.axes2);
+bw = im2bw(img1, 0.7);
+label = bwlable(bw);
+stats = regionprops(label, 'Solidity', 'Area');
+density = [stats.Solidity];
+area = [stats.Area];
+high_dense_area = density > 0.5;
+max_area = max(area(high_dense_area));
+tumor_label = find(area == max_area);
+tumor = ismember(label, tumor_label);
+se = strel('square' ,5);
+tumor = imdilate(tumor , se)
+Bound = bwboundaries(tumor, 'noholes');
+imshow(img1);
+hold on
+for i=1: length(Bound)
+    plot(Bound{i}(:,2), Bound{i} (:,1), 'y' , 'linwidth', 1.75)
+end
+title('\fontsize{20}\color[rgb]{0.996, 0.592, 0.0} Tumor Detected!');
+hold off
+axes(handles.axes)
